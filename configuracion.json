@@ -1,0 +1,38 @@
+{
+    "palabras": [
+        "llorar",
+        "perro",
+        "mono",
+        "reír"
+    ],
+    "colores": {
+        "Sustantivos": "red",
+        "Verbos": "green",
+        "Adjetivos": "blue"
+    },
+    "orientacion": "Horizontal",
+    "cantidad": {
+        "Sustantivos": "2",
+        "Verbos": "2",
+        "Adjetivos": "2"
+    },
+    "mayus": "Mayúsculas",
+    "titulos": "Arial",
+    "textos": "Arial",
+    "estilo": "GreenTan",
+    "oficina": "oficina3",
+    "sustantivos": [
+        "perro",
+        "gato",
+        "mono"
+    ],
+    "verbos": [
+        "reír",
+        "llorar"
+    ],
+    "adjetivos": [],
+    "ayuda": [
+        "si",
+        "si"
+    ]
+}
