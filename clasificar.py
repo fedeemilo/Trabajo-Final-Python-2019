@@ -14,3 +14,5 @@ def clasificar(palabra):
       return palabra_tag
   else:
     return palabra_tag
+
+#-----------------------------------------------------------------------------------------------
