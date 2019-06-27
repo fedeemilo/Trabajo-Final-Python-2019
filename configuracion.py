@@ -246,3 +246,4 @@ def configuracion():
       window_config.FindElement('list').Update(values=(Lista))
     
  window_config.Close()
+ #---------------------------------------------------------------------------------------------
