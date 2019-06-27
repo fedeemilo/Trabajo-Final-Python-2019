@@ -1,4 +1,3 @@
-
 import PySimpleGUI as sg
 from jugar import jugar
 from configuracion import configuracion
