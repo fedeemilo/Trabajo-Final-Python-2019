@@ -1,9 +1,13 @@
 {
     "palabras": [
-        "llorar",
-        "perro",
-        "mono",
-        "reír"
+        "pintar",
+        "correr",
+        "helado",
+        "avión",
+        "coger",
+        "puta",
+        "gato",
+        "feo"
     ],
     "colores": {
         "Sustantivos": "red",
@@ -21,18 +25,11 @@
     "textos": "Arial",
     "estilo": "GreenTan",
     "oficina": "oficina3",
-    "sustantivos": [
-        "perro",
-        "gato",
-        "mono"
-    ],
-    "verbos": [
-        "reír",
-        "llorar"
-    ],
+    "sustantivos": [],
+    "verbos": [],
     "adjetivos": [],
     "ayuda": [
         "si",
-        "si"
+        "no"
     ]
 }
