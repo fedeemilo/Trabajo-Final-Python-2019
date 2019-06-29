@@ -37,102 +37,158 @@ def configuracion():
  oficinas = ['oficina1', 'oficina2', 'oficina3', 'oficina4', 'oficina5']
 
  colum_estilo =  [
-                  [sg.Text("Estilo", relief='raised', text_color='black')],
-                  [sg.InputCombo(estilos,
-                    size=(9, 1),
+                  [sg.Text("Estilo", 
+                    relief='groove', 
+                    text_color='white',
+                    background_color='dark slate gray'),
+                  sg.InputCombo(estilos,
+                    size=(14, 1),
                     default_value=data["estilo"], 
                     key='estilos', 
-                    readonly=True)]
+                    readonly=True,
+                    background_color='dark slate gray')]
                  ]
 
  colum_oficina = [
-                  [sg.Text("Oficina", relief='raised', text_color='black')],
-                  [sg.InputCombo(oficinas,
-                    size=(9, 1),
+                  [sg.Text("Oficina", 
+                    relief='groove', 
+                    text_color='white',
+                    background_color='dark slate gray'),
+                  sg.InputCombo(oficinas,
+                    size=(14, 1),
                     default_value=data["oficina"], 
                     key='oficinas', 
-                    readonly=True)]
+                    readonly=True,
+                    background_color='dark slate gray')]
                  ]
 
  colum_titulos = [
-                  [sg.Text("Títulos", relief='groove'),
+                  [sg.Text("Títulos", 
+                    relief='groove', 
+                    background_color='dark slate gray'),
                    sg.InputCombo(tipografias,   
-                    size=(9, 1),
+                    size=(14, 1),
                     default_value=data["titulos"], 
                     key='titulos', 
-                    readonly=True)]
+                    readonly=True,
+                    background_color='dark slate gray')]
                  ]
 
  colum_textos = [
-                  [sg.Text("Textos", relief='groove'),
+                  [sg.Text("Textos", 
+                    relief='groove', 
+                    background_color='dark slate gray'),
                    sg.InputCombo(tipografias, 
-                    size=(9, 1),
+                    size=(14, 1),
                     default_value=data["textos"], 
                     key='textos', 
-                    readonly=True)],
+                    readonly=True,
+                    background_color='dark slate gray')],
                 ]
 
  layout=[
-          [sg.Text(" Configurar palabras ", relief='raised', text_color='black')],
-          [sg.Text("Ingrese una palabra", size=(20,1), relief='groove'), sg.InputText(key='input', size=(20,3))],
+          [sg.Text("  Configuración del juego ", 
+            relief='raised', 
+            text_color='black',
+            background_color='dark slate gray',
+            size=(26,1),
+            font=('Courier', 14, 'bold'))],
+          [sg.Text("Ingrese una palabra", 
+            size=(20,1), 
+            relief='groove',
+            background_color = '#2F2F4F'), sg.InputText(
+                              key='input', 
+                              size=(20,3))],
           [sg.Listbox(values=(data["palabras"]),key="list", size=(50,3))],
-          [sg.Submit("Agregar"),sg.Submit("Quitar")],
-          [sg.Text("Colores", relief='raised', text_color='black')],
-          [sg.T('Sust'), sg.InputCombo((list(color.keys())), 
+          [sg.Submit("Agregar"),sg.Submit("Quitar", button_color=('white','red'))],
+          [sg.Text("Colores", 
+            relief='raised', 
+            text_color='black', 
+            font=('Courier', 12, 'bold'))],
+          [sg.T('Sust', background_color='dark slate gray'), sg.InputCombo((list(color.keys())), 
               size=(9, 1), 
               key='color_sust', 
               default_value='rojo', 
               readonly=True), 
-            sg.T('Verbs'), sg.InputCombo((list(color.keys())), 
+            sg.T('Verbs', background_color='dark slate gray'), sg.InputCombo((list(color.keys())), 
               size=(9, 1), 
               key='color_verb', 
               default_value='verde', 
               readonly=True), 
-            sg.T('Adj'), sg.InputCombo((list(color.keys())), 
+            sg.T('Adj', background_color='dark slate gray'), sg.InputCombo((list(color.keys())), 
               size=(9, 1), 
               key='color_adj', 
               default_value='azul', 
               readonly=True)],
-          [sg.Text("Orientacion", relief='raised', text_color='black')],
+          [sg.Text("Orientación", 
+            relief='raised', 
+            text_color='black', 
+            font=('Courier', 12, 'bold'))],
           [sg.InputCombo(("Vertical","Horizontal"), 
             size=(10, 1),
             default_value=data["orientacion"], 
             key='vert_horiz', 
             readonly=True)],
-          [sg.Text("Cantidad de palabras", relief='raised', text_color='black')],
-          [sg.Text("Sustantivos:", size=(12,1),),sg.InputText(
+          [sg.Text("Cantidad de palabras", 
+            relief='raised', 
+            text_color='black', 
+            font=('Courier', 12, 'bold'))],
+          [sg.Text("Sustantivos:", size=(12,1), background_color='dark slate gray'),sg.InputText(
                                                   size=(3,1),
                                                   default_text =data["cantidad"]["Sustantivos"], 
                                                   key='cant_sust'),
-            sg.Text("Verbos:", size=(7,1)),sg.InputText(
+            sg.Text("Verbos:", size=(7,1), background_color='dark slate gray'),sg.InputText(
                                                   size=(3,1),
                                                   default_text =data["cantidad"]["Verbos"], 
                                                   key='cant_verb'),
-            sg.Text("Adjetivos:", size=(10,1)),sg.InputText(
+            sg.Text("Adjetivos:", size=(10,1), background_color='dark slate gray'),sg.InputText(
                                                 size=(3,1),
                                                 default_text =data["cantidad"]["Verbos"], 
                                                 key='cant_adj')],
-          [sg.Text("Mayúsculas/Minúsculas", relief='raised', text_color='black')],
+          [sg.Text("Mayúsculas/Minúsculas", 
+            relief='raised', 
+            text_color='black', 
+            font=('Courier', 12, 'bold'))],
           [sg.InputCombo(("Mayúsculas","Minúsculas"), 
             size=(10, 1),
             default_value=data["mayus"], 
             key='mayus', 
             readonly=True)],
-          [sg.Text("Tipografías de títulos y texto para el reporte", relief='raised', text_color='black')],
-          [sg.Column(colum_titulos), sg.Column(colum_textos)],
-          [sg.Text("Datos que provienen de los sensores de Raspberry Pi", relief='raised', text_color='black')],
-          [sg.Column(colum_estilo), sg.Column(colum_oficina)],
-          [sg.T('Opciones de ayuda para el alumno', relief='raised', font='Courier')],
-          [sg.Checkbox('Lista de palabras', key='check_lista'), 
-           sg.Checkbox('Definiciones de las palabras', key='check_def')],
-          [sg.Submit("Guardar cambios"),sg.Cancel("Volver")],
+          [sg.Text("Tipografías de títulos y texto para el reporte", 
+            relief='raised', 
+            text_color='black',
+            font=('Courier', 12, 'bold'))],
+          [sg.Column(colum_titulos, 
+            background_color = 'dark slate gray'), 
+          sg.Column(colum_textos, 
+            background_color = 'dark slate gray')],
+          [sg.Text("Datos que provienen de los sensores de Raspberry Pi", 
+            relief='raised', 
+            text_color='black',
+            font=('Courier', 12, 'bold'))],
+          [sg.Column(colum_estilo, 
+            background_color = 'dark slate gray'), 
+          sg.Column(colum_oficina, 
+            background_color = 'dark slate gray')],
+          [sg.T('Opciones de ayuda para el alumno', 
+            relief='raised',  
+            text_color='black',
+            font=('Courier', 12, 'bold'))],
+          [sg.Checkbox('Lista de palabras', 
+            key='check_lista',
+            background_color='dark slate gray'), 
+           sg.Checkbox('Definiciones de las palabras', 
+            key='check_def',
+            background_color='dark slate gray')],
+          [sg.Submit("Guardar cambios"), sg.Button("Volver a Inicio", key='volver', font=('Courier', 12, 'bold'))],
         ]
 
  window_config = sg.Window("Configuración",
-                  size=(570,670), 
+                  size=(570,663), 
                   font='Courier', 
                   no_titlebar=True,
-                  grab_anywhere=True).Layout(layout)
+                  grab_anywhere=True,
+                  background_color='dark slate gray').Layout(layout)
 
  lista_adjetivos = []
  lista_sustantivos = []
@@ -147,9 +203,12 @@ def configuracion():
   cant_adj = int(data["cantidad"]["Adjetivos"])
 
   if button == "Guardar cambios":
-  
-     #ÉSTO GENERA UN PROBLEMA!!
-     Lista =[]
+     if len(data['palabras']) != 0:
+      Lista = data['palabras']
+     else:
+      Lista =[]
+      #ESTA PARTE DEL CÓDIGO CAUSA PROBLEMAS..
+      #________________________________________________________
      if len(lista_sustantivos) >= cant_sust:
       Lista.extend(random.sample(lista_sustantivos, k=cant_sust))
      else:
@@ -162,7 +221,9 @@ def configuracion():
       Lista.extend(random.sample(lista_adjetivos, k=cant_adj))
      else:
       Lista.extend(lista_adjetivos) 
+      #_________________________________________________________
 
+     Lista = list(set(Lista))
 
 
      #Se cargan los datos de la configuracion para cargarlos en configuracion.json
@@ -190,9 +251,9 @@ def configuracion():
 
      if values['check_lista'] & values['check_def']:
       datosConfig['ayuda'] = ['si', 'si']
-     elif values['check_lista'] &  values['check_def']:
+     elif values['check_lista']:
       datosConfig['ayuda'] = ['si', 'no']
-     elif values['check_lista'] & values['check_def']:
+     elif values['check_def']:
       datosConfig['ayuda'] = ['no', 'si']
      else:
       datosConfig['ayuda'] = ['no', 'no']
@@ -200,10 +261,15 @@ def configuracion():
      with open("configuracion.json", "w+", encoding='utf-8') as j:
         json.dump(datosConfig , j, indent=4, ensure_ascii=False)
 
-     sg.Popup('La configuración ha sido guardada con éxito.', font='Courier')
+     sg.Popup('La configuración ha sido guardada con éxito.', 
+      font='Courier', 
+      background_color='green',
+      no_titlebar=True,
+      button_color=('white', 'green'),
+      grab_anywhere=True)
      break
 
-  if button=="Volver" or values==None:
+  if button == "volver" or values == None:
      break
 
   if button=="Agregar":
@@ -237,12 +303,19 @@ def configuracion():
         font='Courier', 
         no_titlebar=True, 
         background_color='red',
-        grab_anywhere=True)
+        grab_anywhere=True,
+        button_color=('white', 'red'))
   if button=="Quitar":
       try:
        Lista.remove(values['list'][0])
-      except(ValueError):
-          sg.PopupError("No se puede quitar la palabra por que no existe en la lista")        
+      except ValueError:
+          sg.PopupError("No se puede quitar la palabra por que no existe en la lista")  
+      except IndexError:
+          sg.Popup('No hay ninguna palabra para quitar', 
+            font='Courier',
+            background_color='red',
+            button_color=('white', 'red'),
+            no_titlebar=True)
       window_config.FindElement('list').Update(values=(Lista))
     
  window_config.Close()
