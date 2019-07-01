@@ -190,9 +190,18 @@ def configuracion():
                   grab_anywhere=True,
                   background_color='dark slate gray').Layout(layout)
 
+
+
  lista_adjetivos = []
  lista_sustantivos = []
  lista_verbos = []
+
+ if len(data['sustantivos']) > 0:
+  lista_sustantivos.extend(data['sustantivos'])
+ if len(data['adjetivos']) > 0:
+  lista_adjetivos.extend(data['adjetivos'])
+ if len(data['verbos']) > 0:
+  lista_verbos.extend(data['verbos'])
 
  while True:
   button, values = window_config.Read()
@@ -207,6 +216,7 @@ def configuracion():
       Lista = data['palabras']
      else:
       Lista =[]
+
       #ESTA PARTE DEL CÓDIGO CAUSA PROBLEMAS..
       #________________________________________________________
      if len(lista_sustantivos) >= cant_sust:
@@ -223,6 +233,7 @@ def configuracion():
       Lista.extend(lista_adjetivos) 
       #_________________________________________________________
 
+     #
      Lista = list(set(Lista))
 
 
@@ -249,14 +260,22 @@ def configuracion():
      datosConfig["verbos"] = lista_verbos
      datosConfig["adjetivos"] = lista_adjetivos
 
+     #CONFIGURACIÓN DE AYUDA PARA EL ALUMNO
+     #_______________________________________________
+     #lista y definiciones activadas
      if values['check_lista'] & values['check_def']:
       datosConfig['ayuda'] = ['si', 'si']
+     #lista activada 
      elif values['check_lista']:
       datosConfig['ayuda'] = ['si', 'no']
+     #definiciones activadas 
      elif values['check_def']:
       datosConfig['ayuda'] = ['no', 'si']
+     #ayuda desactivada
      else:
       datosConfig['ayuda'] = ['no', 'no']
+     #_______________________________________________
+
 
      with open("configuracion.json", "w+", encoding='utf-8') as j:
         json.dump(datosConfig , j, indent=4, ensure_ascii=False)
@@ -293,7 +312,7 @@ def configuracion():
           lista_verbos.append(palabra_clasificada[0])
         elif palabra_clasificada[1] == 'JJ':
           lista_adjetivos.append(palabra_clasificada[0])   
-             
+            
 
       Lista.append(palabra_clasificada[0])      
       window_config.FindElement('list').Update(values=(Lista))
