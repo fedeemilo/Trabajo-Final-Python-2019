@@ -1,11 +1,16 @@
 {
     "palabras": [
-        "pintar",
+        "bonito",
+        "cantar",
+        "viajar",
+        "bailar",
         "correr",
         "helado",
-        "avión",
-        "coger",
-        "puta",
+        "pelota",
+        "lindo",
+        "perro",
+        "amar",
+        "mono",
         "gato",
         "feo"
     ],
@@ -16,18 +21,36 @@
     },
     "orientacion": "Horizontal",
     "cantidad": {
-        "Sustantivos": "2",
-        "Verbos": "2",
-        "Adjetivos": "2"
+        "Sustantivos": "1",
+        "Verbos": "1",
+        "Adjetivos": "1"
     },
     "mayus": "Mayúsculas",
     "titulos": "Arial",
     "textos": "Arial",
     "estilo": "GreenTan",
     "oficina": "oficina3",
-    "sustantivos": [],
-    "verbos": [],
-    "adjetivos": [],
+    "sustantivos": [
+        "gato",
+        "perro",
+        "helado",
+        "perro",
+        "gato",
+        "mono",
+        "pelota"
+    ],
+    "verbos": [
+        "correr",
+        "amar",
+        "cantar",
+        "bailar",
+        "viajar"
+    ],
+    "adjetivos": [
+        "lindo",
+        "feo",
+        "bonito"
+    ],
     "ayuda": [
         "si",
         "no"
