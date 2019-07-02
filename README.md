@@ -30,5 +30,7 @@ Es configurada por el docente y la resolución se da por parte de los estudiante
 
 # Interfaz gráfica de la aplicación 
 
+![alt text](https://raw.githubusercontent.com/fedeemilo/Trabajo-Final-Python-2019/master/Sopa_de_Letras.png)
+
 
 
