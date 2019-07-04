@@ -28,7 +28,11 @@ Windows o Linux).
 La misma permite el armado de la sopa de letras con palabras clasificadas como sustantivos, adjetivos y verbos.
 Es configurada por el docente y la resolución se da por parte de los estudiantes. 
 
-# Interfaz gráfica de la aplicación 
+# Interfaz gráfica del inicio y la configuración 
+
+![alt text](https://raw.githubusercontent.com/fedeemilo/Trabajo-Final-Python-2019/master/Sopa_de_Letras.png)
+
+# Interfaz del juego
 
 ![alt text](https://raw.githubusercontent.com/fedeemilo/Trabajo-Final-Python-2019/master/Sopa_de_Letras.png)
 
