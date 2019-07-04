@@ -34,7 +34,7 @@ Es configurada por el docente y la resolución se da por parte de los estudiante
 
 # Interfaz del juego
 
-![alt text](https://raw.githubusercontent.com/fedeemilo/Trabajo-Final-Python-2019/master/Sopa_de_Letras.png)
+![alt text](https://raw.githubusercontent.com/fedeemilo/Trabajo-Final-Python-2019/master/jugando_sopa.png)
 
 
 
