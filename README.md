@@ -36,7 +36,7 @@ Trabajo final de la materia Seminario de Leguajes: Python, que implica el desarr
 
 # Interfaz gráfica del juego 
 
-![alt text](https://raw.githubusercontent.com/fedeemilo/Trabajo-Final-Python-2019/master/assets/Sopa_de_Letras.png)
+![alt text](https://raw.githubusercontent.com/fedeemilo/Trabajo-Final-Python-2019/master/assets/jugando_sopa.png)
 
 
 
