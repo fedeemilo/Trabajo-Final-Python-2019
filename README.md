@@ -1,6 +1,6 @@
 # Trabajo-Final-Python-2019
 
-# # Trabajo final de la materia Seminario de Leguajes: Python, que implica el desarrollo de aplicaciones:
+## Trabajo final de la materia Seminario de Leguajes: Python, que implica el desarrollo de aplicaciones:
   ●aplicaciones para Raspberry con sensores;
   ●aplicación educativa destinada a niños y niñas de escuelas primarias.
  
