@@ -180,7 +180,13 @@ def configuracion():
            sg.Checkbox('Definiciones de las palabras', 
             key='check_def',
             background_color='dark slate gray')],
-          [sg.Submit("Guardar cambios"), sg.Button("Volver a Inicio", key='volver', font=('Courier', 12, 'bold'))],
+          [sg.Submit("Guardar cambios"), 
+           sg.Button('Limpiar Json', 
+            key='limpiar',
+            font='Courier'),
+           sg.Button("Volver a Inicio", 
+            key='volver', 
+            font=('Courier', 12, 'bold'))]
         ]
 
  window_config = sg.Window("Configuración",
@@ -190,8 +196,8 @@ def configuracion():
                   grab_anywhere=True,
                   background_color='dark slate gray').Layout(layout)
 
-
-
+ 
+ datosConfig = {}
  lista_adjetivos = []
  lista_sustantivos = []
  lista_verbos = []
@@ -213,11 +219,10 @@ def configuracion():
 
   if button == "Guardar cambios":
      if len(data['palabras']) != 0:
-      Lista = data['palabras']
+      Lista = data['palabras'].copy()
      else:
       Lista =[]
 
-      #ESTA PARTE DEL CÓDIGO CAUSA PROBLEMAS..
       #________________________________________________________
      if len(lista_sustantivos) >= cant_sust:
       Lista.extend(random.sample(lista_sustantivos, k=cant_sust))
@@ -233,12 +238,11 @@ def configuracion():
       Lista.extend(lista_adjetivos) 
       #_________________________________________________________
 
-     #
+     #Me aseguro de que la lista no tenga palabras que se repitan
      Lista = list(set(Lista))
 
 
      #Se cargan los datos de la configuracion para cargarlos en configuracion.json
-     datosConfig = {}
      datosConfig["palabras"] = sorted(Lista, key=lambda palabra: len(palabra), reverse=True)
      datosConfig["colores"] = {
                                 "Sustantivos": color[values['color_sust']],
@@ -291,42 +295,52 @@ def configuracion():
   if button == "volver" or values == None:
      break
 
-  if button=="Agregar":
-    try:
-      #Pattern -> a medida que se van agregando palabras se consulta a pattern si existe, sino
-      #a Wiktionary enviando su correspondiente reporte en caso de que no exista 
-      input_palabra = values['input']
-      
-      #clasifico la palabra ingresada utilizando módulos de pattern.es
-      #si la función retorna false entonces no se ha encontrado y procedo a buscarla en wiktionary
-      palabra_clasificada = c.clasificar(input_palabra)[0]
-      print(palabra_clasificada)
-      
-      if palabra_clasificada == False:
-        #busco la palabra en wiktionary
-        print('buscando en wiktionary')
-      else:
-        if palabra_clasificada[1] == 'NN':
-          lista_sustantivos.append(palabra_clasificada[0])
-        elif palabra_clasificada[1] == 'VB':
-          lista_verbos.append(palabra_clasificada[0])
-        elif palabra_clasificada[1] == 'JJ':
-          lista_adjetivos.append(palabra_clasificada[0])   
-            
-
-      Lista.append(palabra_clasificada[0])      
-      window_config.FindElement('list').Update(values=(Lista))
-      window_config.FindElement('input').Update('') 
-    except TypeError:
-      sg.Popup('Debes ingresar una palabra', 
-        font='Courier', 
-        no_titlebar=True, 
-        background_color='red',
-        grab_anywhere=True,
-        button_color=('white', 'red'))
-  if button=="Quitar":
+  elif button=="Agregar":
+    input_palabra = values['input']
+    if input_palabra in values['list']:
+      sg.Popup('Ésta palabra ya se encuentra en la lista, elige otra porfavor.', 
+        background_color='orange',
+        button_color=('white','orange'),
+        font=('Courier', 13, 'bold'),
+        no_titlebar=True)
+    else:
       try:
-       Lista.remove(values['list'][0])
+        #Pattern -> a medida que se van agregando palabras se consulta a pattern si existe, sino
+        #a Wiktionary enviando su correspondiente reporte en caso de que no exista 
+        
+        #clasifico la palabra ingresada utilizando módulos de pattern.es
+        #si la función retorna false entonces no se ha encontrado y procedo a buscarla en wiktionary
+        palabra_clasificada = c.clasificar(input_palabra)[0]
+        print(palabra_clasificada)
+        
+        if palabra_clasificada == False:
+          #busco la palabra en wiktionary
+          print('buscando en wiktionary')
+        else:
+          if palabra_clasificada[1] == 'NN':
+            lista_sustantivos.append(palabra_clasificada[0])
+          elif palabra_clasificada[1] == 'VB' or palabra_clasificada[1] == 'VBN':
+            lista_verbos.append(palabra_clasificada[0])
+          elif palabra_clasificada[1] == 'JJ':
+            lista_adjetivos.append(palabra_clasificada[0])   
+              
+
+        Lista.append(palabra_clasificada[0])      
+        window_config.FindElement('list').Update(values=(Lista))
+        window_config.FindElement('input').Update('') 
+      except TypeError:
+        sg.Popup('Debes ingresar una palabra', 
+          font='Courier', 
+          no_titlebar=True, 
+          background_color='red',
+          grab_anywhere=True,
+          button_color=('white', 'red'))
+  elif button=="Quitar":
+      try:
+  
+       palabra_a_borrar = values['list'][0]
+       Lista.pop(data['palabras'].index(palabra_a_borrar))
+       
       except ValueError:
           sg.PopupError("No se puede quitar la palabra por que no existe en la lista")  
       except IndexError:
@@ -336,6 +350,37 @@ def configuracion():
             button_color=('white', 'red'),
             no_titlebar=True)
       window_config.FindElement('list').Update(values=(Lista))
+  elif button == 'limpiar':
+    with open('configuracion.json', 'w+', encoding='utf-8') as f:
+      datosConfig["palabras"] = []
+      datosConfig["colores"] = {
+                                "Sustantivos": 'red',
+                                "Verbos": 'green',
+                                "Adjetivos": 'blue'
+                              }
+      datosConfig["orientacion"] = 'Horizontal'
+      datosConfig["cantidad"] = {
+                                "Sustantivos":  '0',
+                                "Verbos": '0',
+                                "Adjetivos": '0'
+                               }
+      datosConfig["mayus"] = 'Minúsculas'
+      datosConfig["titulos"] = 'Arial'
+      datosConfig["textos"] = 'Arial'
+      datosConfig["estilo"] = 'GreenTan'
+      datosConfig["oficina"] = 'oficina1'
+      datosConfig["sustantivos"] = []
+      datosConfig["verbos"] = []
+      datosConfig["adjetivos"] = []
+      datosConfig['ayuda'] = ['no', 'no']
+
+      json.dump(datosConfig, f, indent=4, ensure_ascii=False)
+      sg.Popup('El archivo configuracion.json ha sido limpiado con éxito!', 
+        background_color='green',
+        button_color=('white', 'green'),
+        font=('Courier', 13, 'bold'),
+        no_titlebar=True)
+      break
     
  window_config.Close()
  #---------------------------------------------------------------------------------------------
