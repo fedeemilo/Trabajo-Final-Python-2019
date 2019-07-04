@@ -4,7 +4,7 @@
   ●aplicaciones para Raspberry con sensores;
   ●aplicación educativa destinada a niños y niñas de escuelas primarias.
  
-# Condiciones para el desarrollo:
+## Condiciones para el desarrollo:
   ● Usar PySimpleGUI para las interfaces gráficas.
   ● Utilizar y definir los archivos que se requieran generar con cualquiera de los
   formatos vistos en la cursada.
@@ -30,11 +30,11 @@
   aparecerán en la sopa, asi cómo también si el alumno conttará con la opción de pedir ayuda o no. 
   La resolución de la sopa de letras se da por parte de los estudiantes.
 
-# Interfaz gráfica del módulo de inicio y de la configuración del juego
+## Interfaz gráfica del módulo de inicio y de la configuración del juego
 
 ![alt text](https://raw.githubusercontent.com/fedeemilo/Trabajo-Final-Python-2019/master/assets/Sopa_de_Letras.png)
 
-# Interfaz gráfica del juego 
+## Interfaz gráfica del juego 
 
 ![alt text](https://raw.githubusercontent.com/fedeemilo/Trabajo-Final-Python-2019/master/assets/jugando_sopa.png)
 
