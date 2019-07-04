@@ -30,11 +30,11 @@ Es configurada por el docente y la resolución se da por parte de los estudiante
 
 # Interfaz gráfica del inicio y la configuración 
 
-![alt text](https://raw.githubusercontent.com/fedeemilo/Trabajo-Final-Python-2019/master/Sopa_de_Letras.png)
+![alt text](https://raw.githubusercontent.com/fedeemilo/Trabajo-Final-Python-2019/master/assets/Sopa_de_Letras.png)
 
 # Interfaz del juego
 
-![alt text](https://raw.githubusercontent.com/fedeemilo/Trabajo-Final-Python-2019/master/jugando_sopa.png)
+![alt text](https://raw.githubusercontent.com/fedeemilo/Trabajo-Final-Python-2019/master/assets/jugando_sopa.png)
 
 
 
