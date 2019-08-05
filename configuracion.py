@@ -12,7 +12,10 @@ lista_verbos = []
 Lista_definiciones = []
 encontro_wik = False
 encontro_pattern = False
-definiciones = ''
+definicion_docente = ''
+palabra_clasif_wikt = []
+palabra_clasif_pattern = []
+
 
 #diccionario de colores donde la clave es el nombre del color en español que será mostrado en 
 #la interfaz gráfica y el valor está en ingles para poder modificar el atributo de cambio de color 
@@ -44,7 +47,7 @@ oficinas = ['oficina1', 'oficina2', 'oficina3', 'oficina4', 'oficina5']
 
 #----------------------------------------------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------
-def guardarCambios(data, datosConfig, Lista, cant_sust, cant_verb, cant_adj, values, definiciones):
+def guardarCambios(data, datosConfig, Lista, cant_sust, cant_verb, cant_adj, values, Lista_definiciones):
       
        """Éste método recolecta todos los datos que el docente cargó en la configuración y los guarda en el archivo configuracion.json"""  
 
@@ -97,7 +100,7 @@ def guardarCambios(data, datosConfig, Lista, cant_sust, cant_verb, cant_adj, val
        datosConfig["sustantivos"] = lista_sustantivos
        datosConfig["verbos"] = lista_verbos
        datosConfig["adjetivos"] = lista_adjetivos
-       datosConfig["definiciones"] = definiciones
+       datosConfig["definiciones"] = Lista_definiciones
 
        #levanto una excepción en el caso de que los input para la cantidad de 
        #tipos de palabras esten todos seteados en 0(cero)
@@ -131,7 +134,7 @@ def guardarCambios(data, datosConfig, Lista, cant_sust, cant_verb, cant_adj, val
         grab_anywhere=True)
 #----------------------------------------------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------    
-def agregarPalabra(encontro_wik, encontro_pattern, values):
+def agregarPalabra(encontro_wik, encontro_pattern, values, definicion_docente, palabra_clasif_wikt, palabra_clasif_pattern):
     """Éste método sirve para agregar palabras a la lista de la configuración, siendo antes analizada por Wiktionary, 
     o Pattern.es en el caso de no encontrala. Si no esta en ninguno de los dos recursos se añade esta situación en un reporte.txt"""   
     input_palabra = values['input']
@@ -143,7 +146,7 @@ def agregarPalabra(encontro_wik, encontro_pattern, values):
       #Según la clasificaión dada por Wiktionary voy cargando las listas de tipos de palabras
       if palabra_clasif_wikt[2] == 'NN':
         lista_sustantivos.append(palabra_clasif_wikt[0])
-      elif palabra_clasif_wikt[2] == 'VB' or palabra_clasificada[1] == 'VBN':
+      elif palabra_clasif_wikt[2] == 'VB' or palabra_clasif_wikt[1] == 'VBN':
          lista_verbos.append(palabra_clasif_wikt[0])
       elif palabra_clasif_wikt[2] == 'JJ':
          lista_adjetivos.append(palabra_clasif_wikt[0])
@@ -381,7 +384,7 @@ def configuracion():
  while True:
   button, values = window_config.Read()
   Lista = data["palabras"]
-  Lista_definiciones = data["definiciones"]
+  # Lista_definiciones = data["definiciones"]
 
   cant_sust = int(data["cantidad"]["Sustantivos"])
   cant_verb = int(data["cantidad"]["Verbos"])
@@ -389,7 +392,7 @@ def configuracion():
 
   if button == "Guardar cambios":
     try:
-     guardarCambios(data, datosConfig, Lista, cant_sust, cant_verb, cant_adj, values, definiciones)
+     guardarCambios(data, datosConfig, Lista, cant_sust, cant_verb, cant_adj, values, Lista_definiciones)
      break
     except ValueError:
       sg.Popup('Los input para la cantidad de tipos de palabras no pueden estar todos en 0(cero)',
@@ -402,16 +405,19 @@ def configuracion():
      break
 
   elif button=="Agregar":
-    agregarPalabra(encontro_wik, encontro_pattern, values)
+    agregarPalabra(encontro_wik, encontro_pattern, values, definicion_docente, palabra_clasif_wikt, palabra_clasif_pattern)
 
     if not encontro_wik and not encontro_pattern:
       continue
 
     if encontro_wik:
-      Lista.append(palabra_clasificada[0])   
+      #si la encontró en wikt la añado a la lista de palabras y cargo la definicion en la lista de definiciones
+      Lista.append(palabra_clasif_wikt[0])   
+      Lista_definiciones.append(palabra_clasif_wikt[1])
     elif encontro_patt:
-      Lista.append(palabra_clasificada[0][0])   
-      Lista_definiciones.append(palabra_clasificada[1])
+      Lista.append(palabra_clasif_pattern[0][0])
+      Lista_definiciones.append(definicion_docente)   
+    
     window_config.FindElement('list').Update(values=(Lista))
     window_config.FindElement('input').Update('') 
   elif button=="Quitar":
@@ -452,7 +458,7 @@ def configuracion():
       datosConfig["verbos"] = []
       datosConfig["adjetivos"] = []
       datosConfig['ayuda'] = ['no', 'no']
-      datosConfig["definiciones"]=[]
+      datosConfig["definiciones"] = []
 
       json.dump(datosConfig, f, indent=4, ensure_ascii=False)
       sg.Popup('El archivo configuracion.json ha sido limpiado con éxito!', 

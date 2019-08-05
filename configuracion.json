@@ -1,16 +1,5 @@
 {
-    "palabras": [
-        "helado",
-        "dormir",
-        "correr",
-        "perro",
-        "gordo",
-        "lindo",
-        "flaco",
-        "mono",
-        "gato",
-        "feo"
-    ],
+    "palabras": [],
     "colores": {
         "Sustantivos": "red",
         "Verbos": "green",
@@ -18,34 +7,21 @@
     },
     "orientacion": "Horizontal",
     "cantidad": {
-        "Sustantivos": "3",
-        "Verbos": "1",
-        "Adjetivos": "1"
+        "Sustantivos": "0",
+        "Verbos": "0",
+        "Adjetivos": "0"
     },
     "mayus": "Minúsculas",
     "titulos": "Arial",
     "textos": "Arial",
     "estilo": "GreenTan",
     "oficina": "oficina1",
-    "sustantivos": [
-        "perro",
-        "gato",
-        "mono",
-        "helado"
-    ],
-    "verbos": [
-        "correr",
-        "dormir"
-    ],
-    "adjetivos": [
-        "lindo",
-        "feo",
-        "gordo",
-        "flaco"
-    ],
-    "definiciones": "",
+    "sustantivos": [],
+    "verbos": [],
+    "adjetivos": [],
+    "definiciones": [],
     "ayuda": [
         "no",
-        "si"
+        "no"
     ]
 }
