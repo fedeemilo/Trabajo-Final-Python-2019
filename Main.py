@@ -1,7 +1,8 @@
 import PySimpleGUI as sg
 from jugar import jugar
 from configuracion import configuracion
-sg.ChangeLookAndFeel('BrownBlue')
+
+
 layout = [    
           [sg.T('  Sopa de Letras \n     Educativa   ', 
             background_color='lightgreen', 

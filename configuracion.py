@@ -4,15 +4,58 @@ import random
 
 from clasificar import clasificar_wikt, clasificar_pattern
 
+#declaro globalmentes las variables que se utilizarán en los métodos posteriormente
+datosConfig = {}
+lista_adjetivos = []
+lista_sustantivos = []
+lista_verbos = []
+Lista_definiciones = []
+encontro_wik = False
+encontro_pattern = False
+definiciones = ''
+
+#diccionario de colores donde la clave es el nombre del color en español que será mostrado en 
+#la interfaz gráfica y el valor está en ingles para poder modificar el atributo de cambio de color 
+#del sg.Text
+color = {
+     "rojo": "red",
+     "azul": "blue",
+     "verde": "green",
+     "naranja": "orange",
+     "amarillo": "yellow",
+     "gris": "gray",
+     "violeta": "purple",
+     "rosa": "pink",
+     "marron": "brown"
+              }
+
+ #Lista con varios nombres de tipografías para configurar los títulos y los textos que se usaran en el reporte
+tipografias = [
+                  'Arial', 'Arial Black',  'Helvetica', 'Impact', 'Lucida Sans Unicode', 'Tahoma',
+                  'Courier', 'Verdana', 'Lucida Console'
+                ]
+  
+#Estilos Look and Feel -> este estilo se elegirá en base al promedio de temperaturas
+#registrado en todas las oficinas (debemos asignarle un color a cierto rango de temperaturas!!)
+estilos = ['NeutralBlue', 'Purple', 'GreenTan', 'BluePurple', 'BrightColors']
+
+#Lista con las diferentes oficinas en las que se analizará la temperatura
+oficinas = ['oficina1', 'oficina2', 'oficina3', 'oficina4', 'oficina5']
+
 #----------------------------------------------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------
-def guardarCambios(data, datosConfig, lista_adjetivos, lista_sustantivos, lista_verbos, Lista, cant_sust, cant_verb, cant_adj, color, values):
-       """Éste método recolecta todos los datos que el docente cargó en la configuración y los guarda en el archivo configuracion.json"""    
+def guardarCambios(data, datosConfig, Lista, cant_sust, cant_verb, cant_adj, values, definiciones):
+      
+       """Éste método recolecta todos los datos que el docente cargó en la configuración y los guarda en el archivo configuracion.json"""  
+
+       #Si existen palabras guardadas en el archivo json entonces las copia en la variable Lista
+       #para luego seguir extendiendola, sino inicializa la Lista sin palabras
        if len(data['palabras']) != 0:
         Lista = data['palabras'].copy()
        else:
         Lista =[]
-
+       #exitendo la lista de palabras tomando de la configuración el setting del docente
+       # de cuantas palabras de cada tipo mostrar 
         #________________________________________________________
        if len(lista_sustantivos) >= cant_sust:
         Lista.extend(random.sample(lista_sustantivos, k=cant_sust))
@@ -29,6 +72,7 @@ def guardarCambios(data, datosConfig, lista_adjetivos, lista_sustantivos, lista_
         #_________________________________________________________
 
        #Me aseguro de que la lista no tenga palabras que se repitan
+       #convirtiendola primero en un conjunto y luego reconvertirla en lista
        Lista = list(set(Lista))
 
 
@@ -53,6 +97,7 @@ def guardarCambios(data, datosConfig, lista_adjetivos, lista_sustantivos, lista_
        datosConfig["sustantivos"] = lista_sustantivos
        datosConfig["verbos"] = lista_verbos
        datosConfig["adjetivos"] = lista_adjetivos
+       datosConfig["definiciones"] = definiciones
 
        #levanto una excepción en el caso de que los input para la cantidad de 
        #tipos de palabras esten todos seteados en 0(cero)
@@ -86,8 +131,51 @@ def guardarCambios(data, datosConfig, lista_adjetivos, lista_sustantivos, lista_
         grab_anywhere=True)
 #----------------------------------------------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------    
+def agregarPalabra(encontro_wik, encontro_pattern, values):
+    """Éste método sirve para agregar palabras a la lista de la configuración, siendo antes analizada por Wiktionary, 
+    o Pattern.es en el caso de no encontrala. Si no esta en ninguno de los dos recursos se añade esta situación en un reporte.txt"""   
+    input_palabra = values['input']
+    palabra_clasif_wikt = clasificar_wikt(input_palabra)
+    palabra_clasif_pattern = clasificar_pattern(input_palabra)
+    if palabra_clasif_wikt != False:
+      #La encontró en Wiktionary
+      encontro_wik = True
+      #Según la clasificaión dada por Wiktionary voy cargando las listas de tipos de palabras
+      if palabra_clasif_wikt[2] == 'NN':
+        lista_sustantivos.append(palabra_clasif_wikt[0])
+      elif palabra_clasif_wikt[2] == 'VB' or palabra_clasificada[1] == 'VBN':
+         lista_verbos.append(palabra_clasif_wikt[0])
+      elif palabra_clasif_wikt[2] == 'JJ':
+         lista_adjetivos.append(palabra_clasif_wikt[0])
+    else:
+      #No la encontró en wiktionary, así que la busco en pattern
 
-
+      if palabra_clasif_pattern != False:
+        #Primero debo solicitar al docente que ingrese una definición para la palabra
+        definicion_docente = sg.PopupGetText('Ingrese una definición para la palabra encontrada en pattern.es',
+        background_color='dark slate gray',
+        button_color=('white', 'dark slate gray'),
+        no_titlebar=True,
+        font=('Courier', 13, 'bold'),
+          text_color='white')
+        #La encontró en pattern
+        print('No la encontró en Wiktionary pero sí en Pattern')  
+        encontro_pattern = True
+        if palabra_clasif_pattern[0][1] == 'NN':
+          lista_sustantivos.append(palabra_clasif_pattern[0])
+        elif palabra_clasif_pattern[0][1] == 'VB' or palabra_clasif_pattern[1] == 'VBN':
+          lista_verbos.append(palabra_clasif_pattern[0])
+        elif palabra_clasif_pattern[0][1] == 'JJ':
+          lista_adjetivos.append(palabra_clasif_pattern[0])
+      else:
+        #No la encontró en pattern ni en wiktionary 
+        sg.Popup('La palabra no se encuentra en ninguno de los recursos utilizados. Se añadirá ésta situación en un reporte.', 
+              background_color='red',
+              button_color=('white','red'),
+              no_titlebar=True,
+              font=('Courier', 13, 'bold'))
+#----------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------    
 
 
 
@@ -109,33 +197,6 @@ def configuracion():
  with open('configuracion.json', encoding='utf-8') as f:
      data = json.load(f)
 
- #diccionario de colores donde la clave es el nombre del color en español que será mostrado en 
- #la interfaz gráfica y el valor está en ingles para poder modificar el atributo de cambio de color 
- #del sg.Text
- color={
-        "rojo": "red",
-        "azul": "blue",
-        "verde": "green",
-        "naranja": "orange",
-        "amarillo": "yellow",
-        "gris": "gray",
-        "violeta": "purple",
-        "rosa": "pink",
-        "marron": "brown"
-       }
-
- #Lista con varios nombres de tipografías para configurar los títulos y los textos que se usaran en el reporte
- tipografias = [
-                'Arial', 'Arial Black',  'Helvetica', 'Impact', 'Lucida Sans Unicode', 'Tahoma',
-                'Courier', 'Verdana', 'Lucida Console'
-               ]
- 
- #Estilos Look and Feel -> este estilo se elegirá en base al promedio de temperaturas
- #registrado en todas las oficinas (debemos asignarle un color a cierto rango de temperaturas!!)
- estilos = ['NeutralBlue', 'Purple', 'GreenTan', 'BluePurple', 'BrightColors']
-
- #Lista con las diferentes oficinas en las que se analizará la temperatura
- oficinas = ['oficina1', 'oficina2', 'oficina3', 'oficina4', 'oficina5']
 
  colum_estilo =  [
                   [sg.Text("Estilo", 
@@ -309,11 +370,6 @@ def configuracion():
                   grab_anywhere=True,
                   background_color='dark slate gray').Layout(layout)
 
- 
- datosConfig = {}
- lista_adjetivos = []
- lista_sustantivos = []
- lista_verbos = []
 
  if len(data['sustantivos']) > 0:
   lista_sustantivos.extend(data['sustantivos'])
@@ -325,6 +381,7 @@ def configuracion():
  while True:
   button, values = window_config.Read()
   Lista = data["palabras"]
+  Lista_definiciones = data["definiciones"]
 
   cant_sust = int(data["cantidad"]["Sustantivos"])
   cant_verb = int(data["cantidad"]["Verbos"])
@@ -332,7 +389,7 @@ def configuracion():
 
   if button == "Guardar cambios":
     try:
-     guardarCambios(data, datosConfig, lista_adjetivos, lista_sustantivos, lista_verbos, Lista, cant_sust, cant_verb, cant_adj, color, values)
+     guardarCambios(data, datosConfig, Lista, cant_sust, cant_verb, cant_adj, values, definiciones)
      break
     except ValueError:
       sg.Popup('Los input para la cantidad de tipos de palabras no pueden estar todos en 0(cero)',
@@ -345,63 +402,16 @@ def configuracion():
      break
 
   elif button=="Agregar":
-    input_palabra = values['input']
-    #A medida que voy agregando las palabras primero se consulta en Wiktionary si la
-    #misma existe. En caso afirmativo se la clasifica (adj, sust o verb). También se 
-    #deberá verificar que la info obtenida coincida con lo reportado por pattern.es. 
-    #Si la clasificación de la palabra no coincide entonces ésto deberá ser informado
-    #en un reporte, tomando la clasificación de Wiktionary como válida. Si la palabra
-    #no se encuentra en wiktionary pero sí en pattern.es, se tomará la clasificación
-    #de pattern y se le pedirá al docente que ingrese una defininción, marcando que
-    #se utilizará una definición guardada en un archivo local y no en Wiktionary. 
-    #Si la palabra no se encuentra en ningún recurso entonces no se incluirá y 
-    #también se incluirá ésto en un reporte.
-    encontro_wik = False
-    encontro_patt = False
-    palabra_clasificada = clasificar_wikt(input_palabra)
-    if palabra_clasificada != False:
-      #La encontró en Wiktionary
-      encontro_wik = True
-      if palabra_clasificada[2] == 'NN':
-        lista_sustantivos.append(palabra_clasificada[0])
-      elif palabra_clasificada[2] == 'VB' or palabra_clasificada[1] == 'VBN':
-         lista_verbos.append(palabra_clasificada[0])
-      elif palabra_clasificada[2] == 'JJ':
-         lista_adjetivos.append(palabra_clasificada[0])
-    else:
-      #No la encontró en wiktionary, así que la busco en pattern
+    agregarPalabra(encontro_wik, encontro_pattern, values)
 
-      palabra_clasificada = clasificar_pattern(input_palabra)
-      if palabra_clasificada != False:
-        #Primero debo solicitar al docente que ingrese una definición para la palabra
-        definicion_docente = sg.PopupGetText('Ingrese una definición para la palabra encontrada en pattern.es',
-        background_color='dark slate gray',
-        button_color=('white', 'dark slate gray'),
-        no_titlebar=True,
-        font=('Courier', 13, 'bold'),
-          text_color='white')
-        #La encontró en pattern
-        print('No la encontró en Wiktionary pero sí en Pattern')
-        
-        encontro_patt = True
-        if palabra_clasificada[0][1] == 'NN':
-          lista_sustantivos.append(palabra_clasificada[0])
-        elif palabra_clasificada[0][1] == 'VB' or palabra_clasificada[1] == 'VBN':
-          lista_verbos.append(palabra_clasificada[0])
-        elif palabra_clasificada[0][1] == 'JJ':
-          lista_adjetivos.append(palabra_clasificada[0])
-      else:
-        #No la encontró en pattern ni en wiktionary 
-        sg.Popup('La palabra no se encuentra en ninguno de los recursos utilizados. Se añadirá ésta situación en un reporte.', 
-              background_color='red',
-              button_color=('white','red'),
-              no_titlebar=True,
-              font=('Courier', 13, 'bold'))
-        continue
+    if not encontro_wik and not encontro_pattern:
+      continue
+
     if encontro_wik:
       Lista.append(palabra_clasificada[0])   
     elif encontro_patt:
       Lista.append(palabra_clasificada[0][0])   
+      Lista_definiciones.append(palabra_clasificada[1])
     window_config.FindElement('list').Update(values=(Lista))
     window_config.FindElement('input').Update('') 
   elif button=="Quitar":
@@ -442,6 +452,7 @@ def configuracion():
       datosConfig["verbos"] = []
       datosConfig["adjetivos"] = []
       datosConfig['ayuda'] = ['no', 'no']
+      datosConfig["definiciones"]=[]
 
       json.dump(datosConfig, f, indent=4, ensure_ascii=False)
       sg.Popup('El archivo configuracion.json ha sido limpiado con éxito!', 

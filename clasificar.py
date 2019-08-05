@@ -22,7 +22,6 @@ def clasificar_wikt(palabra='casa'):
 	if articulo != None: 
 		pos_inicial = articulo.source.find('<dt>')
 		pos_final = articulo.source.find('<dt>', pos_inicial + 1)
-		hasta_punto = plaintext(articulo.source[pos_inicial:pos_final]).find('.')
 		definicion = plaintext(articulo.source[pos_inicial:pos_final])
 
 		print('\n  Def: *', definicion, '*',sep='')

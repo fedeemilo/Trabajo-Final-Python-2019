@@ -1,14 +1,14 @@
 {
     "palabras": [
         "helado",
-        "correr",
         "dormir",
+        "correr",
         "perro",
         "gordo",
         "lindo",
         "flaco",
-        "gato",
         "mono",
+        "gato",
         "feo"
     ],
     "colores": {
@@ -43,8 +43,9 @@
         "gordo",
         "flaco"
     ],
+    "definiciones": "",
     "ayuda": [
         "no",
-        "no"
+        "si"
     ]
 }
