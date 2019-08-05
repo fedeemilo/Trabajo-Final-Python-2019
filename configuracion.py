@@ -4,9 +4,10 @@ import random
 
 from clasificar import clasificar_wikt, clasificar_pattern
 
-
-def guardarCambios():
-     
+#----------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------
+def guardarCambios(data, datosConfig, lista_adjetivos, lista_sustantivos, lista_verbos, Lista, cant_sust, cant_verb, cant_adj, color, values):
+       """Éste método recolecta todos los datos que el docente cargó en la configuración y los guarda en el archivo configuracion.json"""    
        if len(data['palabras']) != 0:
         Lista = data['palabras'].copy()
        else:
@@ -83,7 +84,9 @@ def guardarCambios():
         no_titlebar=True,
         button_color=('white', 'green'),
         grab_anywhere=True)
-     
+#----------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------    
+
 
 
 
@@ -329,7 +332,7 @@ def configuracion():
 
   if button == "Guardar cambios":
     try:
-     guardarCambios()
+     guardarCambios(data, datosConfig, lista_adjetivos, lista_sustantivos, lista_verbos, Lista, cant_sust, cant_verb, cant_adj, color, values)
      break
     except ValueError:
       sg.Popup('Los input para la cantidad de tipos de palabras no pueden estar todos en 0(cero)',

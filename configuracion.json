@@ -1,12 +1,12 @@
 {
     "palabras": [
-        "dormir",
-        "correr",
         "helado",
-        "flaco",
+        "correr",
+        "dormir",
         "perro",
         "gordo",
         "lindo",
+        "flaco",
         "gato",
         "mono",
         "feo"
@@ -20,7 +20,7 @@
     "cantidad": {
         "Sustantivos": "3",
         "Verbos": "1",
-        "Adjetivos": "3"
+        "Adjetivos": "1"
     },
     "mayus": "Minúsculas",
     "titulos": "Arial",
