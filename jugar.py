@@ -131,7 +131,9 @@ def jugar():
             window_sopa.FindElement('lista_pal').Update(values=data['palabras'])
           if data['ayuda'][1] == 'si':
             for x in range(len(data["definiciones"])):
-             sg.Popup("Definicion "+str(x+1),data["definiciones"][x])
+             sg.PopupScrolled(data["definiciones"][x],  
+             title='Definiciones',
+             button_color=('white', 'dark slate gray'))
           elif data['ayuda'][0] == 'no' and data['ayuda'][1] == 'no':
             sg.Popup('La ayuda está desactivada, debes intentarlo sólo/a!', 
               font=('Courier', 12, 'bold'), 

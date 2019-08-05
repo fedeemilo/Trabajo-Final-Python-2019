@@ -4,12 +4,18 @@ import random
 
 from clasificar import clasificar_wikt, clasificar_pattern
 
+#primero abro el archivo.json y cargo toda la estructura en data
+with open('configuracion.json', encoding='utf-8') as f:
+  data = json.load(f)
+
 #declaro globalmentes las variables que se utilizarán en los métodos posteriormente
+Lista = data["palabras"]
+print(Lista)
 datosConfig = {}
 lista_adjetivos = []
 lista_sustantivos = []
 lista_verbos = []
-Lista_definiciones = []
+Lista_definiciones = data['definiciones']
 encontro_wik = False
 encontro_pattern = False
 definicion_docente = ''
@@ -57,6 +63,7 @@ def guardarCambios(data, datosConfig, Lista, cant_sust, cant_verb, cant_adj, val
         Lista = data['palabras'].copy()
        else:
         Lista =[]
+       print(Lista)
        #exitendo la lista de palabras tomando de la configuración el setting del docente
        # de cuantas palabras de cada tipo mostrar 
         #________________________________________________________
@@ -134,7 +141,7 @@ def guardarCambios(data, datosConfig, Lista, cant_sust, cant_verb, cant_adj, val
         grab_anywhere=True)
 #----------------------------------------------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------    
-def agregarPalabra(encontro_wik, encontro_pattern, values, definicion_docente, palabra_clasif_wikt, palabra_clasif_pattern):
+def agregarPalabra(encontro_wik, encontro_pattern, values, definicion_docente, palabra_clasif_wikt, palabra_clasif_pattern, Lista, window_config):
     """Éste método sirve para agregar palabras a la lista de la configuración, siendo antes analizada por Wiktionary, 
     o Pattern.es en el caso de no encontrala. Si no esta en ninguno de los dos recursos se añade esta situación en un reporte.txt"""   
     input_palabra = values['input']
@@ -177,6 +184,16 @@ def agregarPalabra(encontro_wik, encontro_pattern, values, definicion_docente, p
               button_color=('white','red'),
               no_titlebar=True,
               font=('Courier', 13, 'bold'))
+    if encontro_wik:
+      #si la encontró en wikt la añado a la lista de palabras y cargo la definicion en la lista de definiciones
+      Lista.append(palabra_clasif_wikt[0])   
+      Lista_definiciones.append(palabra_clasif_wikt[1])
+    elif encontro_patt:
+      Lista.append(palabra_clasif_pattern[0][0])
+      Lista_definiciones.append(definicion_docente)         
+    window_config.FindElement('list').Update(values=(Lista))
+    window_config.FindElement('input').Update('')  
+    print(Lista)
 #----------------------------------------------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------    
 
@@ -197,10 +214,6 @@ def agregarPalabra(encontro_wik, encontro_pattern, values, definicion_docente, p
 
 #CONFIGURACIÓN DEL JUEGO
 def configuracion():
- with open('configuracion.json', encoding='utf-8') as f:
-     data = json.load(f)
-
-
  colum_estilo =  [
                   [sg.Text("Estilo", 
                     relief='groove', 
@@ -383,7 +396,6 @@ def configuracion():
 
  while True:
   button, values = window_config.Read()
-  Lista = data["palabras"]
   # Lista_definiciones = data["definiciones"]
 
   cant_sust = int(data["cantidad"]["Sustantivos"])
@@ -405,21 +417,9 @@ def configuracion():
      break
 
   elif button=="Agregar":
-    agregarPalabra(encontro_wik, encontro_pattern, values, definicion_docente, palabra_clasif_wikt, palabra_clasif_pattern)
+    agregarPalabra(encontro_wik, encontro_pattern, values, definicion_docente, palabra_clasif_wikt, palabra_clasif_pattern, Lista, window_config)
 
-    if not encontro_wik and not encontro_pattern:
-      continue
 
-    if encontro_wik:
-      #si la encontró en wikt la añado a la lista de palabras y cargo la definicion en la lista de definiciones
-      Lista.append(palabra_clasif_wikt[0])   
-      Lista_definiciones.append(palabra_clasif_wikt[1])
-    elif encontro_patt:
-      Lista.append(palabra_clasif_pattern[0][0])
-      Lista_definiciones.append(definicion_docente)   
-    
-    window_config.FindElement('list').Update(values=(Lista))
-    window_config.FindElement('input').Update('') 
   elif button=="Quitar":
       try:
   
