@@ -1,5 +1,9 @@
 {
-    "palabras": [],
+    "palabras": [
+        "santiago",
+        "correr",
+        "perro"
+    ],
     "colores": {
         "Sustantivos": "red",
         "Verbos": "green",
@@ -7,8 +11,8 @@
     },
     "orientacion": "Horizontal",
     "cantidad": {
-        "Sustantivos": "0",
-        "Verbos": "0",
+        "Sustantivos": "1",
+        "Verbos": "1",
         "Adjetivos": "0"
     },
     "mayus": "Minúsculas",
@@ -16,12 +20,24 @@
     "textos": "Arial",
     "estilo": "GreenTan",
     "oficina": "oficina1",
-    "sustantivos": [],
-    "verbos": [],
+    "sustantivos": [
+        [
+            "santiago",
+            "NN"
+        ],
+        "perro"
+    ],
+    "verbos": [
+        "correr"
+    ],
     "adjetivos": [],
+    "definiciones": [
+        "nombre propio masculino",
+        "",
+        ""
+    ],
     "ayuda": [
         "no",
         "no"
-    ],
-    "definiciones": []
+    ]
 }

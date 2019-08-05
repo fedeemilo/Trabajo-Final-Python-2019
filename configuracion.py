@@ -153,7 +153,7 @@ def agregarPalabra(encontro_wik, encontro_pattern, values, definicion_docente, p
     if palabra_clasif_wikt[2] != palabra_clasif_pattern[0][1]:
       reporte(palabra_clasif_pattern, palabra_clasif_wikt, input_palabra, 0)
 
-    if palabra_clasif_wikt != False:
+    if palabra_clasif_wikt[2] != '_no_sabe_':
       #La encontró en Wiktionary
       encontro_wik = True
       #Según la clasificaión dada por Wiktionary voy cargando las listas de tipos de palabras
@@ -165,7 +165,7 @@ def agregarPalabra(encontro_wik, encontro_pattern, values, definicion_docente, p
          lista_adjetivos.append(palabra_clasif_wikt[0])
     else:
       #No la encontró en wiktionary, así que la busco en pattern
-      if palabra_clasif_pattern != False:
+      if palabra_clasif_pattern[0][1] != '_no_sabe_':
         #si la encuentra en pattern guardo esta situación en el reporte
         reporte(palabra_clasif_pattern, palabra_clasif_wikt, input_palabra, 1)
         #Primero debo solicitar al docente que ingrese una definición para la palabra
@@ -191,6 +191,7 @@ def agregarPalabra(encontro_wik, encontro_pattern, values, definicion_docente, p
         sg.Popup('La palabra no se encuentra en ninguno de los recursos utilizados. Se añadirá ésta situación en un reporte.', 
               background_color='red',
               button_color=('white','red'),
+              text_color='white',
               no_titlebar=True,
               font=('Courier', 13, 'bold'))
     if encontro_wik:
