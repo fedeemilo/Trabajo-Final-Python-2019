@@ -1,6 +1,9 @@
 import PySimpleGUI as sg
 import json
 import random
+import time
+import datetime
+import os
 
 from clasificar import clasificar_wikt, clasificar_pattern
 
@@ -10,7 +13,6 @@ with open('configuracion.json', encoding='utf-8') as f:
 
 #declaro globalmentes las variables que se utilizarán en los métodos posteriormente
 Lista = data["palabras"]
-print(Lista)
 datosConfig = {}
 lista_adjetivos = []
 lista_sustantivos = []
@@ -21,6 +23,7 @@ encontro_pattern = False
 definicion_docente = ''
 palabra_clasif_wikt = []
 palabra_clasif_pattern = []
+nombre_archivo_reporte = 'reporte.txt'
 
 
 #diccionario de colores donde la clave es el nombre del color en español que será mostrado en 
@@ -80,12 +83,10 @@ def guardarCambios(data, datosConfig, Lista, cant_sust, cant_verb, cant_adj, val
        else:
         Lista.extend(lista_adjetivos) 
         #_________________________________________________________
-
+       
        #Me aseguro de que la lista no tenga palabras que se repitan
        #convirtiendola primero en un conjunto y luego reconvertirla en lista
        Lista = list(set(Lista))
-
-
        #Se cargan los datos de la configuracion para cargarlos en configuracion.json
        datosConfig["palabras"] = sorted(Lista, key=lambda palabra: len(palabra), reverse=True)
        datosConfig["colores"] = {
@@ -147,6 +148,11 @@ def agregarPalabra(encontro_wik, encontro_pattern, values, definicion_docente, p
     input_palabra = values['input']
     palabra_clasif_wikt = clasificar_wikt(input_palabra)
     palabra_clasif_pattern = clasificar_pattern(input_palabra)
+
+    #verificar si la clasificación de wiktionary coincide con la de pattern.es
+    if palabra_clasif_wikt[2] != palabra_clasif_pattern[0][1]:
+      reporte(palabra_clasif_pattern, palabra_clasif_wikt, input_palabra, 0)
+
     if palabra_clasif_wikt != False:
       #La encontró en Wiktionary
       encontro_wik = True
@@ -159,10 +165,11 @@ def agregarPalabra(encontro_wik, encontro_pattern, values, definicion_docente, p
          lista_adjetivos.append(palabra_clasif_wikt[0])
     else:
       #No la encontró en wiktionary, así que la busco en pattern
-
       if palabra_clasif_pattern != False:
+        #si la encuentra en pattern guardo esta situación en el reporte
+        reporte(palabra_clasif_pattern, palabra_clasif_wikt, input_palabra, 1)
         #Primero debo solicitar al docente que ingrese una definición para la palabra
-        definicion_docente = sg.PopupGetText('Ingrese una definición para la palabra encontrada en pattern.es',
+        definicion_docente = sg.PopupGetText('Ingrese una definición para la palabra: ',
         background_color='dark slate gray',
         button_color=('white', 'dark slate gray'),
         no_titlebar=True,
@@ -179,6 +186,8 @@ def agregarPalabra(encontro_wik, encontro_pattern, values, definicion_docente, p
           lista_adjetivos.append(palabra_clasif_pattern[0])
       else:
         #No la encontró en pattern ni en wiktionary 
+        #Añado ésta situación al reporte
+        reporte(palabra_clasif_pattern, palabra_clasif_wikt, input_palabra, 2)
         sg.Popup('La palabra no se encuentra en ninguno de los recursos utilizados. Se añadirá ésta situación en un reporte.', 
               background_color='red',
               button_color=('white','red'),
@@ -188,26 +197,77 @@ def agregarPalabra(encontro_wik, encontro_pattern, values, definicion_docente, p
       #si la encontró en wikt la añado a la lista de palabras y cargo la definicion en la lista de definiciones
       Lista.append(palabra_clasif_wikt[0])   
       Lista_definiciones.append(palabra_clasif_wikt[1])
-    elif encontro_patt:
+    elif encontro_pattern:
+      #si la encontró en pattern pero no en wikt cargo la clasificación de pattern y la definición
+      #dada por el docente
       Lista.append(palabra_clasif_pattern[0][0])
       Lista_definiciones.append(definicion_docente)         
     window_config.FindElement('list').Update(values=(Lista))
     window_config.FindElement('input').Update('')  
-    print(Lista)
+
 #----------------------------------------------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------    
+def reporte(clasif_patt, clasif_wikt, palabra, error):
+	"""pone en archivo de texto un reporte de los errores encontrados en la ejecucion de la sopa de letras"""
+	""" recibe un numero de error y en base a el informa que tipo de error es"""
+	hora = datetime.datetime.now()
+	hora = str(hora)[:-10]
+	 
+	if error == 0:
+		texto = "[{}] {}: Wiktionario la clasificó como '{}' y pattern como '{}'."
+		texto = texto.format(hora, palabra.capitalize(), clasif_wikt, clasif_patt)
+	
+	if error == 1:
+		texto = '[{}] {}: Wiktionario no encontró la palabra, pero pattern sí, y la clasifica cómo {}.\n'
+		texto = texto.format(hora, palabra.capitalize(), clasif_patt)
+	
+	elif error == 2:
+		texto = '[{}] El termino "{}": no se encontró en ningun motor de busqueda.\n'.format(hora,palabra.capitalize())
 
+	print('Error {}:{}'.format(error,texto))
+	
+	existe = os.path.isfile(nombre_archivo_reporte)
+	if existe:
+		archivo = open(nombre_archivo_reporte, 'a', encoding = 'utf-8')
+	else:
+		archivo = open(nombre_archivo_reporte, 'w', encoding = 'utf-8')
+		print('Se ha creado un reporte de errores en',nombre_archivo_reporte)
+	archivo.write(texto)
+	archivo.close()
+#----------------------------------------------------------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------------------------------------------------------    
+def limpiarArchivoJson(win_config):
+  with open('configuracion.json', 'w+', encoding='utf-8') as f:
+      datosConfig["palabras"] = []
+      datosConfig["colores"] = {
+                                "Sustantivos": 'red',
+                                "Verbos": 'green',
+                                "Adjetivos": 'blue'
+                              }
+      datosConfig["orientacion"] = 'Horizontal'
+      datosConfig["cantidad"] = {
+                                "Sustantivos":  '0',
+                                "Verbos": '0',
+                                "Adjetivos": '0'
+                               }
+      datosConfig["mayus"] = 'Minúsculas'
+      datosConfig["titulos"] = 'Arial'
+      datosConfig["textos"] = 'Arial'
+      datosConfig["estilo"] = 'GreenTan'
+      datosConfig["oficina"] = 'oficina1'
+      datosConfig["sustantivos"] = []
+      datosConfig["verbos"] = []
+      datosConfig["adjetivos"] = []
+      datosConfig['ayuda'] = ['no', 'no']
+      datosConfig["definiciones"] = []
+      win_config.FindElement('list').Update(values=[])
 
-
-
-
-
-
-
-
-
-
-
+      json.dump(datosConfig, f, indent=4, ensure_ascii=False)
+      sg.Popup('El archivo configuracion.json ha sido limpiado con éxito!', 
+        background_color='green',
+        button_color=('white', 'green'),
+        font=('Courier', 13, 'bold'),
+        no_titlebar=True)
 
 
 
@@ -422,7 +482,6 @@ def configuracion():
 
   elif button=="Quitar":
       try:
-  
        palabra_a_borrar = values['list'][0]
        Lista.pop(data['palabras'].index(palabra_a_borrar))
        
@@ -436,37 +495,11 @@ def configuracion():
             no_titlebar=True)
       window_config.FindElement('list').Update(values=(Lista))
   elif button == 'limpiar':
-    with open('configuracion.json', 'w+', encoding='utf-8') as f:
-      datosConfig["palabras"] = []
-      datosConfig["colores"] = {
-                                "Sustantivos": 'red',
-                                "Verbos": 'green',
-                                "Adjetivos": 'blue'
-                              }
-      datosConfig["orientacion"] = 'Horizontal'
-      datosConfig["cantidad"] = {
-                                "Sustantivos":  '0',
-                                "Verbos": '0',
-                                "Adjetivos": '0'
-                               }
-      datosConfig["mayus"] = 'Minúsculas'
-      datosConfig["titulos"] = 'Arial'
-      datosConfig["textos"] = 'Arial'
-      datosConfig["estilo"] = 'GreenTan'
-      datosConfig["oficina"] = 'oficina1'
-      datosConfig["sustantivos"] = []
-      datosConfig["verbos"] = []
-      datosConfig["adjetivos"] = []
-      datosConfig['ayuda'] = ['no', 'no']
-      datosConfig["definiciones"] = []
-
-      json.dump(datosConfig, f, indent=4, ensure_ascii=False)
-      sg.Popup('El archivo configuracion.json ha sido limpiado con éxito!', 
-        background_color='green',
-        button_color=('white', 'green'),
-        font=('Courier', 13, 'bold'),
-        no_titlebar=True)
+      limpiarArchivoJson(window_config)
       break
     
  window_config.Close()
  #---------------------------------------------------------------------------------------------
+
+if __name__ == "__main__":
+  configuracion()

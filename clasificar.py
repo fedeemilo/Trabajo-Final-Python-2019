@@ -5,6 +5,7 @@ import PySimpleGUI as sg
 
 @lru_cache(maxsize=16)
 def clasificar_wikt(palabra='casa'):
+	"""Clasificación de las palabras segun wiktionary y obtención de su definición"""
 	clasif = '_no_sabe_'
 	sustantivo = 'NN'
 	adjetivo = 'JJ'
@@ -21,7 +22,7 @@ def clasificar_wikt(palabra='casa'):
 
 	if articulo != None: 
 		pos_inicial = articulo.source.find('<dt>')
-		pos_final = articulo.source.find('<dt>', pos_inicial + 1)
+		pos_final = articulo.source.find('<dt>', pos_inicial)
 		definicion = plaintext(articulo.source[pos_inicial:pos_final])
 
 		print('\n  Def: *', definicion, '*',sep='')
@@ -40,11 +41,12 @@ def clasificar_wikt(palabra='casa'):
 			return [palabra, definicion, clasif]
 	else: 
 		print('La palabra no se encuentra en Wiktionary')		
-		return False
+		return [palabra, '_sin definicion_', clasif]
 
 
 @lru_cache()
-def clasificar_pattern(palabra='casa'):
+def clasificar_pattern(palabra):
+  """Clasificación de las palabras segun pattern.es"""
   palabra_tag = tag(palabra, tokenize=True, encoding='utf-8')
   print(palabra_tag)
 
@@ -52,7 +54,7 @@ def clasificar_pattern(palabra='casa'):
     if not palabra.lower() in spelling:
       if (not(palabra.lower() in lexicon) and not(palabra.upper() in lexicon) and not(palabra.capitalize() in lexicon)):
         print('La palabra no se encuentra en pattern.es')
-        return False
+        return [(palabra, '_no_sabe_')]
       else: 
         return palabra_tag
     else:
