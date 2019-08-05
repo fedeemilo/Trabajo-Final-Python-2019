@@ -4,7 +4,7 @@ from functools import lru_cache
 import PySimpleGUI as sg
 
 @lru_cache(maxsize=16)
-def clasificar_wikt(palabra='casa'):
+def clasificar_wikt(palabra):
 	"""Clasificación de las palabras segun wiktionary y obtención de su definición"""
 	clasif = '_no_sabe_'
 	sustantivo = 'NN'
@@ -22,20 +22,22 @@ def clasificar_wikt(palabra='casa'):
 
 	if articulo != None: 
 		pos_inicial = articulo.source.find('<dt>')
-		pos_final = articulo.source.find('<dt>', pos_inicial)
+		pos_final = articulo.source.find('<dt>', pos_inicial + 1)
 		definicion = plaintext(articulo.source[pos_inicial:pos_final])
+		definicion = definicion[1:]
 
 		print('\n  Def: *', definicion, '*',sep='')
 
 		if ('ES:Sustantivos' in articulo.categories):
 			print('Es un sustantivo según Wiktionary')				
 			return [palabra, definicion, sustantivo]
-		if ('ES:Adjetivos' in articulo.categories):
+		elif ('ES:Adjetivos' in articulo.categories):
 			print('Es un adjetivo según Wiktionary')			
 			return [palabra, definicion, adjetivo]
-		if ('ES:Verbos' in articulo.categories):
+		elif ('ES:Verbos' in articulo.categories):
 			print('Es un verbo según Wiktionary')
 			return [palabra, definicion, verbo]
+
 		if clasif == '_no_sabe_':
 			print('Wiktionary no pudo clasificar la palabra')
 			return [palabra, definicion, clasif]

@@ -7,6 +7,7 @@ import os
 
 from clasificar import clasificar_wikt, clasificar_pattern
 
+
 #primero abro el archivo.json y cargo toda la estructura en data
 with open('configuracion.json', encoding='utf-8') as f:
   data = json.load(f)
@@ -156,6 +157,7 @@ def agregarPalabra(encontro_wik, encontro_pattern, values, definicion_docente, p
     if palabra_clasif_wikt[2] != '_no_sabe_':
       #La encontró en Wiktionary
       encontro_wik = True
+      print('encontro wik')
       #Según la clasificaión dada por Wiktionary voy cargando las listas de tipos de palabras
       if palabra_clasif_wikt[2] == 'NN':
         lista_sustantivos.append(palabra_clasif_wikt[0])
@@ -175,15 +177,17 @@ def agregarPalabra(encontro_wik, encontro_pattern, values, definicion_docente, p
         no_titlebar=True,
         font=('Courier', 13, 'bold'),
           text_color='white')
+        definicion_docente = definicion_docente + ' (Definición añadida por el docente)'
         #La encontró en pattern
         print('No la encontró en Wiktionary pero sí en Pattern')  
         encontro_pattern = True
+        print('encontro patt')
         if palabra_clasif_pattern[0][1] == 'NN':
-          lista_sustantivos.append(palabra_clasif_pattern[0])
+          lista_sustantivos.append(palabra_clasif_pattern[0][0])
         elif palabra_clasif_pattern[0][1] == 'VB' or palabra_clasif_pattern[1] == 'VBN':
-          lista_verbos.append(palabra_clasif_pattern[0])
+          lista_verbos.append(palabra_clasif_pattern[0][0])
         elif palabra_clasif_pattern[0][1] == 'JJ':
-          lista_adjetivos.append(palabra_clasif_pattern[0])
+          lista_adjetivos.append(palabra_clasif_pattern[0][0])
       else:
         #No la encontró en pattern ni en wiktionary 
         #Añado ésta situación al reporte
@@ -198,6 +202,8 @@ def agregarPalabra(encontro_wik, encontro_pattern, values, definicion_docente, p
       #si la encontró en wikt la añado a la lista de palabras y cargo la definicion en la lista de definiciones
       Lista.append(palabra_clasif_wikt[0])   
       Lista_definiciones.append(palabra_clasif_wikt[1])
+      print('Definición de wik: ')
+      print(palabra_clasif_wikt[1])
     elif encontro_pattern:
       #si la encontró en pattern pero no en wikt cargo la clasificación de pattern y la definición
       #dada por el docente
