@@ -35,17 +35,7 @@ class Sonido:
          """Si se detecta un sonido (aplauso) se muestran los datos de temperatura y humedad en la matriz"""
             if GPIO.event_detected(self._canal):
                 mostrarM()
-def main():
-    emu = input('Está emulando? (y or n): ').lower() in ('s','y','si','yes')
-    #emu = True
-    if emu:
-        mostrarEnMatriz(emu)
-    else:
-        iniciar_sensores()
-        sonido = Sonido()
-        while True:
-            time.sleep(0.0001)
-            sonido.evento_detectado(mostrarEnMatriz)                      
+         
 
 def mostrarEnMatriz(emu):
 """Módulo para mostrar los datos de temperatura y humedad en la matriz"""
@@ -86,6 +76,17 @@ def mostrarEnMatriz(emu):
 		text(draw, (1, 0), msg, fill="white")
 	time.sleep(3)
     #--------------------------------------------------------------------------------------
+def main():
+    emu = input('Está emulando? (y or n): ').lower() in ('s','y','si','yes')
+    #emu = True
+    if emu:
+        mostrarEnMatriz(emu)
+    else:
+        iniciar_sensores()
+        sonido = Sonido()
+        while True:
+            time.sleep(0.0001)
+            sonido.evento_detectado(mostrarEnMatriz)             
     #--------------------------------------------------------------------------------------
 if __name__ == "__main__":
   num=input("¿En que oficina se encuentra?(el numero solamente)")
