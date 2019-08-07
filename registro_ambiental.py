@@ -26,15 +26,15 @@ def leer_informacion():
 ############################################################################################## 
 #La funcion guarda los datos obtenidos por info en el archivo json "datos_oficinas.json" , si se encuentra vacio crea la lista para llenarla con los datos.
 def guardar_informacion(info,num):
-    with open(datos_oficinas.json, "r") as archivo:
+    with open('datos_oficinas.json', "r") as archivo:
         try:
             datos_registro = json.load(archivo)
         except Exception:
             datos_registro = {}
     try
-     datos_registro["oficina"+str(num)].append(info)
+        datos_registro["oficina"+str(num)].append(info)
     except Exception:
-     datos_registro["oficina"+str(num)]=[]
+        datos_registro["oficina"+str(num)]=[info]
     with open(datos_oficinas.json, "w") as archivo:
         json.dump(datos_registro, archivo, indent=4)
 ##############################################################################################
