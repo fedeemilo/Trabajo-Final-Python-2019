@@ -14,7 +14,6 @@ with open('configuracion.json', encoding='utf-8') as f:
 
 #declaro globalmentes las variables que se utilizarán en los métodos posteriormente
 Lista = data["palabras"]
-datosConfig = {}
 lista_adjetivos = []
 lista_sustantivos = []
 lista_verbos = []
@@ -57,9 +56,12 @@ oficinas = ['oficina1', 'oficina2', 'oficina3', 'oficina4', 'oficina5']
 
 #----------------------------------------------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------
-def guardarCambios(data, datosConfig, Lista, cant_sust, cant_verb, cant_adj, values, Lista_definiciones):
+def guardarCambios(data, Lista, cant_sust, cant_verb, cant_adj, values, Lista_definiciones):
       
        """Éste método recolecta todos los datos que el docente cargó en la configuración y los guarda en el archivo configuracion.json"""  
+
+       global datosConfig
+       datosConfig = {}
 
        #Si existen palabras guardadas en el archivo json entonces las copia en la variable Lista
        #para luego seguir extendiendola, sino inicializa la Lista sin palabras
@@ -471,7 +473,7 @@ def configuracion():
 
   if button == "Guardar cambios":
     try:
-     guardarCambios(data, datosConfig, Lista, cant_sust, cant_verb, cant_adj, values, Lista_definiciones)
+     guardarCambios(data, Lista, cant_sust, cant_verb, cant_adj, values, Lista_definiciones)
      break
     except ValueError:
       sg.Popup('Los input para la cantidad de tipos de palabras no pueden estar todos en 0(cero)',

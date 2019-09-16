@@ -35,7 +35,7 @@ def guardar_informacion(info,num):
         datos_registro["oficina"+str(num)].append(info)
     except Exception:
         datos_registro["oficina"+str(num)]=[info]
-    with open(datos_oficinas.json, "w") as archivo:
+    with open('datos_oficinas.json', "w") as archivo:
         json.dump(datos_registro, archivo, indent=4)
 ##############################################################################################
 #Primero se selecciona en que oficina se encuentra.
