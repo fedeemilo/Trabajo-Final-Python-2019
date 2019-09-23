@@ -27,57 +27,32 @@ def sopa():
 
     #SUSTANTIVOS
     #________________________________________________
-    if cant_sust != 0 and len_lista_sust != 0:
-      if cant_sust < len_lista_sust:
-        for i in range(cant_sust):
-          lista_auxiliar.append(data['sustantivos'][i])
-      else:
-        for i in range(len_lista_sust):
-          lista_auxiliar.append(data['sustantivos'][i])
+    if len_lista_sust >= cant_sust:
+        lista_auxiliar.extend(random.sample(data["sustantivos"], k=cant_sust))
     else:
-      print('Ningún sustantivo para agregar')
+        lista_auxiliar.extend(data["sustantivos"])
       
     #ADJETIVOS
     #________________________________________________
-    if cant_adj != 0 and len_lista_adj != 0:
-      if cant_adj < len_lista_adj:
-        for i in range(cant_adj):
-          lista_auxiliar.append(data['adjetivos'][i])
-      else:
-        for i in range(len_lista_adj):
-          lista_auxiliar.append(data['adjetivos'][i])
+    if len_lista_adj >= cant_adj:
+        lista_auxiliar.extend(random.sample(data["adjetivos"], k=cant_adj))
     else:
-      print('Ningún adjetivo para agregar')
+        lista_auxiliar.extend(data["adjetivos"])
 
     #VERBOS
     #________________________________________________
-    if cant_verb != 0 and len_lista_verb != 0:
-      if cant_verb < len_lista_sust:
-        for i in range(cant_verb):
-          lista_auxiliar.append(data['verbos'][i])
-      else:
-        for i in range(len_lista_verb):
-          lista_auxiliar.append(data['verbos'][i])
+    if len_lista_verb >= cant_verb:
+        lista_auxiliar.extend(random.sample(data["verbos"], k=cant_verb))
     else:
-      print('Ningún verbo para agregar')
+        lista_auxiliar.extend(data["verbos"])
     #________________________________________________
-    
-
-    print(lista_auxiliar)
-    print(len(lista_auxiliar))
-
     conjunto_lista_aux = set(lista_auxiliar)
     conjunto_lista_orig = set(data['palabras'])
-
-    print(conjunto_lista_aux)
-    print(conjunto_lista_orig)
-
     resultado_lista = sorted(list(conjunto_lista_aux & conjunto_lista_orig), 
                         reverse=True,
                         key= lambda pal: len(pal))
 
     data['palabras'] = resultado_lista.copy()
-    print(data['palabras'])
 
     if data["orientacion"] =="Horizontal":
       #en la matriz mxn si elige HORIZONTAL m = cantidad palabras y n = len(palabra+grande)

@@ -25,7 +25,7 @@ def jugar():
                 [sg.T('*Encuentra las ' + str(longitud_lista_pal) + ' palabras*')],
                 [sg.T('', background_color='dark slate gray')],
                 [sg.Button('Pedir Ayuda!', key='help')],
-                [sg.Listbox(values=[], font='Courier', size=(10,7), key='lista_pal', visible=data['ayuda'][0] == 'si')]
+                [sg.Listbox(values=[], font='Courier', size=(10,7), key='lista_pal',enable_events=True, visible=data['ayuda'][0] == 'si')]
               ]
 
       tipos_de_palabras = [
@@ -129,11 +129,6 @@ def jugar():
         elif evento == 'help':
           if data['ayuda'][0] == 'si':
             window_sopa.FindElement('lista_pal').Update(values=data['palabras'])
-          if data['ayuda'][1] == 'si':
-            for x in range(len(data["definiciones"])):
-             sg.PopupScrolled(data["definiciones"][x],  
-             title='Definiciones',
-             button_color=('white', 'dark slate gray'))
           elif data['ayuda'][0] == 'no' and data['ayuda'][1] == 'no':
             sg.Popup('La ayuda está desactivada, debes intentarlo sólo/a!', 
               font=('Courier', 12, 'bold'), 
@@ -141,6 +136,10 @@ def jugar():
               grab_anywhere=True,
               background_color='orange',
               button_color=('white', 'orange'))
+        elif evento=="lista_pal":
+         sg.PopupScrolled(data["definiciones"][str(values["lista_pal"][0])],  
+             title=values["lista_pal"][0],
+             button_color=('white', 'dark slate gray'))
         elif evento == 'volver':
           break
         elif evento in progreso:

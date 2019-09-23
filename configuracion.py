@@ -11,13 +11,16 @@ from clasificar import clasificar_wikt, clasificar_pattern
 #primero abro el archivo.json y cargo toda la estructura en data
 with open('configuracion.json', encoding='utf-8') as f:
   data = json.load(f)
+#Abro el archivo datos_oficinas.json para saber que oficinas se encuentran con datos
+with open('datos_oficinas.json', encoding='utf-8') as f:
+  jason_oficinas = json.load(f)
 
 #declaro globalmentes las variables que se utilizarán en los métodos posteriormente
 Lista = data["palabras"]
 lista_adjetivos = []
 lista_sustantivos = []
 lista_verbos = []
-Lista_definiciones = data['definiciones']
+diccionario_definiciones = data['definiciones']
 encontro_wik = False
 encontro_pattern = False
 definicion_docente = ''
@@ -51,45 +54,24 @@ tipografias = [
 #registrado en todas las oficinas (debemos asignarle un color a cierto rango de temperaturas!!)
 estilos = ['NeutralBlue', 'Purple', 'GreenTan', 'BluePurple', 'BrightColors']
 
-#Lista con las diferentes oficinas en las que se analizará la temperatura
-oficinas = ['oficina1', 'oficina2', 'oficina3', 'oficina4', 'oficina5']
-
 #----------------------------------------------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------
-def guardarCambios(data, Lista, cant_sust, cant_verb, cant_adj, values, Lista_definiciones):
+def guardarCambios(data, Lista, cant_sust, cant_verb, cant_adj, values, diccionario_definiciones,lista_sustantivos,lista_verbos,lista_adjetivos):
       
        """Éste método recolecta todos los datos que el docente cargó en la configuración y los guarda en el archivo configuracion.json"""  
 
        global datosConfig
        datosConfig = {}
 
-       #Si existen palabras guardadas en el archivo json entonces las copia en la variable Lista
-       #para luego seguir extendiendola, sino inicializa la Lista sin palabras
-       if len(data['palabras']) != 0:
-        Lista = data['palabras'].copy()
-       else:
-        Lista =[]
-       print(Lista)
-       #exitendo la lista de palabras tomando de la configuración el setting del docente
-       # de cuantas palabras de cada tipo mostrar 
-        #________________________________________________________
-       if len(lista_sustantivos) >= cant_sust:
-        Lista.extend(random.sample(lista_sustantivos, k=cant_sust))
-       else:
-        Lista.extend(lista_sustantivos)
-       if len(lista_verbos) >= cant_verb:
-        Lista.extend(random.sample(lista_verbos, k=cant_verb))
-       else:
-        Lista.extend(lista_verbos)
-       if len(lista_adjetivos)>= cant_adj:
-        Lista.extend(random.sample(lista_adjetivos, k=cant_adj))
-       else:
-        Lista.extend(lista_adjetivos) 
-        #_________________________________________________________
-       
+       #Inicializa lista si se encuentra vacia
+       if len(Lista)== 0:
+          Lista =[]
        #Me aseguro de que la lista no tenga palabras que se repitan
        #convirtiendola primero en un conjunto y luego reconvertirla en lista
        Lista = list(set(Lista))
+       lista_adjetivos=list(set(lista_adjetivos))
+       lista_verbos=list(set(lista_verbos))
+       lista_sustantivos=list(set(lista_sustantivos))
        #Se cargan los datos de la configuracion para cargarlos en configuracion.json
        datosConfig["palabras"] = sorted(Lista, key=lambda palabra: len(palabra), reverse=True)
        datosConfig["colores"] = {
@@ -111,7 +93,7 @@ def guardarCambios(data, Lista, cant_sust, cant_verb, cant_adj, values, Lista_de
        datosConfig["sustantivos"] = lista_sustantivos
        datosConfig["verbos"] = lista_verbos
        datosConfig["adjetivos"] = lista_adjetivos
-       datosConfig["definiciones"] = Lista_definiciones
+       datosConfig["definiciones"] = diccionario_definiciones
 
        #levanto una excepción en el caso de que los input para la cantidad de 
        #tipos de palabras esten todos seteados en 0(cero)
@@ -201,17 +183,19 @@ def agregarPalabra(encontro_wik, encontro_pattern, values, definicion_docente, p
               no_titlebar=True,
               font=('Courier', 13, 'bold'))
     if encontro_wik:
-      #si la encontró en wikt la añado a la lista de palabras y cargo la definicion en la lista de definiciones
+      #si la encontró en wikt la añado a la lista de palabras y cargo la definicion en el diccionario de definiciones
       Lista.append(palabra_clasif_wikt[0])   
-      Lista_definiciones.append(palabra_clasif_wikt[1])
+      print(input_palabra)
+      print(palabra_clasif_wikt[1])
+      diccionario_definiciones[str(input_palabra)]=str(palabra_clasif_wikt[1])
       print('Definición de wik: ')
       print(palabra_clasif_wikt[1])
     elif encontro_pattern:
       #si la encontró en pattern pero no en wikt cargo la clasificación de pattern y la definición
       #dada por el docente
       Lista.append(palabra_clasif_pattern[0][0])
-      Lista_definiciones.append(definicion_docente)         
-    window_config.FindElement('list').Update(values=(Lista))
+      diccionario_definiciones[input_palabra]=definicion_docente       
+    window_config.FindElement('list').Update(values=(list(set(Lista))))
     window_config.FindElement('input').Update('')  
 
 #----------------------------------------------------------------------------------------------------------------------------------------------
@@ -246,7 +230,8 @@ def reporte(clasif_patt, clasif_wikt, palabra, error):
 #----------------------------------------------------------------------------------------------------------------------------------------------
 #----------------------------------------------------------------------------------------------------------------------------------------------    
 def limpiarArchivoJson(win_config):
-  with open('configuracion.json', 'w+', encoding='utf-8') as f:
+  datosConfig={}
+  with open('configuracion.json', 'w', encoding='utf-8') as f:
       datosConfig["palabras"] = []
       datosConfig["colores"] = {
                                 "Sustantivos": 'red',
@@ -268,7 +253,7 @@ def limpiarArchivoJson(win_config):
       datosConfig["verbos"] = []
       datosConfig["adjetivos"] = []
       datosConfig['ayuda'] = ['no', 'no']
-      datosConfig["definiciones"] = []
+      datosConfig["definiciones"] = {}
       win_config.FindElement('list').Update(values=[])
 
       json.dump(datosConfig, f, indent=4, ensure_ascii=False)
@@ -301,7 +286,7 @@ def configuracion():
                     relief='groove', 
                     text_color='white',
                     background_color='dark slate gray'),
-                  sg.InputCombo(oficinas,
+                  sg.InputCombo(list(jason_oficinas.keys()),
                     size=(14, 1),
                     default_value=data["oficina"], 
                     key='oficinas', 
@@ -336,8 +321,7 @@ def configuracion():
                 ]
 
  layout=[
-          [sg.Text("  Configuración del juego ", 
-            relief='raised', 
+          [sg.Text("Configuración del juego ",  
             text_color='white',
             background_color='dark slate gray',
             size=(26,1),
@@ -351,8 +335,7 @@ def configuracion():
                               size=(20,3))],
           [sg.Listbox(values=(data["palabras"]),key="list", size=(50,3))],
           [sg.Submit("Agregar"),sg.Submit("Quitar", button_color=('white','red'))],
-          [sg.Text("Colores", 
-            relief='raised', 
+          [sg.Text("Colores",  
             text_color='white',
             background_color='dark slate gray', 
             font=('Courier', 13, 'bold'))],
@@ -371,8 +354,7 @@ def configuracion():
               key='color_adj', 
               default_value='azul', 
               readonly=True)],
-          [sg.Text("Orientación", 
-            relief='raised', 
+          [sg.Text("Orientación",  
             background_color='dark slate gray',
             text_color='white', 
             font=('Courier', 13, 'bold'))],
@@ -382,7 +364,6 @@ def configuracion():
             key='vert_horiz', 
             readonly=True)],
           [sg.Text("Cantidad de palabras", 
-            relief='raised',
             background_color='dark slate gray', 
             text_color='white', 
             font=('Courier', 13, 'bold'))],
@@ -398,8 +379,7 @@ def configuracion():
                                                 size=(3,1),
                                                 default_text =data["cantidad"]["Verbos"], 
                                                 key='cant_adj')],
-          [sg.Text("Mayúsculas/Minúsculas", 
-            relief='raised', 
+          [sg.Text("Mayúsculas/Minúsculas",  
             text_color='white',
             background_color='dark slate gray', 
             font=('Courier', 13, 'bold'))],
@@ -408,8 +388,7 @@ def configuracion():
             default_value=data["mayus"], 
             key='mayus', 
             readonly=True)],
-          [sg.Text("Tipografías de títulos y texto para el reporte", 
-            relief='raised', 
+          [sg.Text("Tipografías de títulos y texto para el reporte",  
             text_color='white',
             background_color='dark slate gray',
             font=('Courier', 13, 'bold'))],
@@ -417,8 +396,7 @@ def configuracion():
             background_color = 'dark slate gray'), 
           sg.Column(colum_textos, 
             background_color = 'dark slate gray')],
-          [sg.Text("Datos que provienen de los sensores de Raspberry Pi", 
-            relief='raised', 
+          [sg.Text("Datos que provienen de los sensores de Raspberry Pi",  
             background_color='dark slate gray',
             text_color='white',
             font=('Courier', 13, 'bold'))],
@@ -426,8 +404,7 @@ def configuracion():
             background_color = 'dark slate gray'), 
           sg.Column(colum_oficina, 
             background_color = 'dark slate gray')],
-          [sg.T('Opciones de ayuda para el alumno', 
-            relief='raised',  
+          [sg.T('Opciones de ayuda para el alumno',   
             text_color='white',
             background_color='dark slate gray',
             font=('Courier', 13, 'bold'))],
@@ -465,15 +442,12 @@ def configuracion():
 
  while True:
   button, values = window_config.Read()
-  # Lista_definiciones = data["definiciones"]
-
   cant_sust = int(data["cantidad"]["Sustantivos"])
   cant_verb = int(data["cantidad"]["Verbos"])
   cant_adj = int(data["cantidad"]["Adjetivos"])
-
   if button == "Guardar cambios":
     try:
-     guardarCambios(data, Lista, cant_sust, cant_verb, cant_adj, values, Lista_definiciones)
+     guardarCambios(data, Lista, cant_sust, cant_verb, cant_adj, values, diccionario_definiciones,lista_sustantivos,lista_verbos,lista_adjetivos)
      break
     except ValueError:
       sg.Popup('Los input para la cantidad de tipos de palabras no pueden estar todos en 0(cero)',
@@ -492,7 +466,15 @@ def configuracion():
   elif button=="Quitar":
       try:
        palabra_a_borrar = values['list'][0]
-       Lista.pop(data['palabras'].index(palabra_a_borrar))
+       Lista.remove(str(values['list'][0]))
+       if str(values['list'][0]) in lista_sustantivos:
+         lista_sustantivos.remove(str(values['list'][0]))
+       elif str(values['list'][0]) in lista_adjetivos:
+         lista_adjetivos.remove(str(values['list'][0]))
+       elif str(values['list'][0]) in lista_verbos:
+         lista_verbos.remove(str(values['list'][0]))
+       diccionario_definiciones.pop(str(values['list'][0]))
+
        
       except ValueError:
           sg.PopupError("No se puede quitar la palabra por que no existe en la lista")  
